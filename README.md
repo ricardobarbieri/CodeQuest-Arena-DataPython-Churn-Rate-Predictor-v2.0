@@ -1,155 +1,95 @@
-🎯 **CodeQuest Arena — Churn Rate Predictor v2.0**
+# CodeQuest Arena — DataPython — Previsor de Churn Rate (v2.0)
 
-Data Science pipeline in Python (Pandas + Scikit-Learn) to predict subscription cancellation (churn), with a graphical user interface (GUI) for visual execution. Developed as a reference solution (10/10 answer key) for the DataPython challenge of the CodeQuest Arena competition.
+Gabarito de referência (10/10) para o desafio de previsão de Churn.
 
----
+## 📁 Arquivos
 
-### 📌 About the Project
+| Arquivo | Função |
+|---|---|
+| `generate_dataset.py` | Gera o dataset sintético `telco_churn.csv` usado no desafio |
+| `churn_pipeline.py` | Pipeline completo de Data Science (o gabarito) |
+| `best_churn_model.pkl` | Modelo treinado salvo, gerado após rodar o pipeline |
 
-This project implements a complete and reproducible Machine Learning pipeline to predict which customers are most likely to cancel a service (churn), using a dataset in the style of the classic Telco Customer Churn. It was built to be simultaneously:
-
-* **Functional** — trains, evaluates, and saves a real model.
-* **Didactic** — each step is commented explaining the *why*, not just the *how*.
-* **Visual** — includes a simple graphical interface to monitor the execution without needing the terminal.
-
----
-
-### ✨ Features
-
-* 🧹 **Data cleaning** (handling missing values with median imputation).
-* 🔤 **Automatic encoding** of categorical variables.
-* 🤖 **Comparative training** between Logistic Regression and Random Forest.
-* 📊 **Evaluation using multiple metrics:** Accuracy, Precision, Recall, F1-Score, and AUC-ROC.
-* 🧩 **Confusion matrix** and ranking of the most important variables.
-* 💾 **Automatic export** of the best model (`.pkl`).
-* 🖥️ **Graphical interface** (Tkinter) to run the pipeline with a single click.
-
----
-
-### 📁 Repository Structure
-
-```text
-Churn Rate Predictor v2.0/
-│
-├── generate_dataset.py     # Generates the synthetic dataset telco_churn.csv
-├── churn_pipeline.py       # ML Pipeline (cleaning, training, evaluation, saving)
-├── churn_gui.py            # Graphical interface that runs the pipeline
-├── telco_churn.csv         # Generated dataset (after running generate_dataset.py)
-├── best_churn_model.pkl    # Saved trained model (generated after running the pipeline)
-└── README.md
-
-```
-
----
-
-### ⚙️ Requirements
-
-* Python 3.9 or higher
-* Libraries: `pandas`, `scikit-learn`, `joblib` (Tkinter comes with standard Python)
-
----
-
-### 🚀 Installation and Usage
+## ▶️ Como executar
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/your-user/codequest-arena-churn.git
-cd codequest-arena-churn
-
-# 2. Install dependencies
 pip install pandas scikit-learn joblib
-
-# 3. Generate the dataset (run only once)
-python generate_dataset.py
-
-# 4. Execute the pipeline via terminal...
-python churn_pipeline.py
-
-# ...or via graphical interface
-python churn_gui.py
-
+python generate_dataset.py   # cria telco_churn.csv (rodar 1x)
+python churn_pipeline.py     # roda o pipeline completo
 ```
 
-**Expected Output (terminal)**
+## 🧠 Como o código funciona (passo a passo)
 
-```text
-[CLEANING] 23 missing values found in 'TotalCharges'
-[CLEANING] Imputed with the median = 2078.85
-[ENCODING] Encoded categorical columns: [...]
+### 1. `generate_dataset.py`
+Cria um dataset de 2.000 clientes fictícios com as mesmas colunas do
+famoso dataset "Telco Customer Churn". De propósito, insere valores
+"sujos" (`" "`, espaço em branco) na coluna `TotalCharges` para os
+clientes novos (`tenure = 0`) — reproduzindo um problema real e comum
+em dados de produção, para testar se o participante trata isso
+corretamente.
 
-=== Logistic Regression ===
-Accuracy : 0.6775
-Precision : 0.5902
-Recall   : 0.4768
-F1-Score : 0.5275
-AUC-ROC  : 0.7145
-...
+### 2. `churn_pipeline.py` — função por função
 
->>> Best model (by F1-Score): Logistic Regression
+**`load_and_clean(path)`**
+- Lê o CSV com `pd.read_csv`.
+- Remove `customerID` (é só um identificador, não um padrão preditivo).
+- Converte `TotalCharges` para número com `pd.to_numeric(..., errors="coerce")`
+  — qualquer valor que não seja número (como `" "`) vira `NaN` automaticamente.
+- Imputa os `NaN` com a **mediana** da coluna (`fillna`). Usamos mediana em
+  vez de média porque é mais resistente a outliers (clientes com contas
+  muito altas ou muito baixas não distorcem o valor de preenchimento).
 
-[INTERPRETABILITY] Top 5 most important variables (Random Forest):
-MonthlyCharges    0.203848
-TotalCharges      0.201140
-tenure            0.176385
-...
+**`encode_categoricals(df)`**
+- Identifica automaticamente todas as colunas de texto (`select_dtypes`).
+- Aplica `LabelEncoder` em cada uma, transformando categorias (ex: "Yes"/"No")
+  em números (0/1) que os modelos conseguem processar.
 
-[PERSISTENCE] Winning model saved to: best_churn_model.pkl
+**`train_and_evaluate(df)`**
+- Separa `X` (variáveis preditoras) de `y` (o alvo: `Churn`).
+- `train_test_split` com `test_size=0.2`, `random_state=42` (reprodutível) e
+  `stratify=y` (mantém a proporção de clientes que cancelam igual nos dois
+  conjuntos — importante porque churn costuma ser desbalanceado).
+- Treina dois modelos dentro de um dicionário `modelos`:
+  - **Regressão Logística**: dentro de um `Pipeline` com `StandardScaler`,
+    pois esse modelo é sensível à escala das variáveis (ex: `tenure` vai de
+    0 a 72, enquanto `TotalCharges` vai a milhares — sem padronizar, a
+    variável de maior escala domina o modelo indevidamente).
+  - **Random Forest**: não precisa de padronização, pois é baseado em
+    divisões de árvore (splits), não em distância/gradiente.
+- Para cada modelo, calcula 5 métricas (não só acurácia!):
+  - **Acurácia**: % de acertos totais (mas engana em dados desbalanceados).
+  - **Precisão**: dos que o modelo disse que iam cancelar, quantos realmente
+    cancelaram (evita "alarme falso").
+  - **Recall**: dos que realmente cancelaram, quantos o modelo pegou (evita
+    "deixar passar" clientes em risco — geralmente a métrica mais importante
+    em churn, pois o custo de perder um cliente é alto).
+  - **F1-Score**: equilíbrio entre precisão e recall.
+  - **AUC-ROC**: capacidade do modelo de separar as duas classes,
+    independente do limiar de decisão.
+- Mostra a **matriz de confusão** (acertos/erros detalhados por classe).
+- Escolhe o **melhor modelo pelo F1-Score** (mais robusto que acurácia
+  para esse tipo de problema).
+- Mostra as **5 variáveis mais importantes** segundo o Random Forest
+  (`feature_importances_`), dando interpretabilidade ao resultado.
 
-```
+**`save_model(modelo, nome, path)`**
+- Salva o modelo vencedor em disco com `joblib.dump`, permitindo reutilizá-lo
+  depois sem precisar retreinar (`joblib.load("best_churn_model.pkl")`).
 
----
+## 📏 Critérios de pontuação sugeridos para os juízes
 
-### 🧠 Methodology
+| Critério | Peso |
+|---|---|
+| Pipeline executa sem erro | 20% |
+| Tratamento correto de nulos e categóricas | 20% |
+| Métricas corretas (não só acurácia) | 25% |
+| Comparação entre 2 modelos | 15% |
+| Organização/legibilidade do código | 10% |
+| Modelo salvo corretamente | 10% |
 
-| Step | Technique Used | Justification |
-| --- | --- | --- |
-| **Missing value handling** | Median imputation | More robust to outliers than the mean. |
-| **Categorical variables** | `LabelEncoder` | Converts text to numbers for the models. |
-| **Variable scaling** | `StandardScaler` (only in Logistic Regression) | Distance/gradient-based models are sensitive to scale; trees are not. |
-| **Train/test split** | 80/20 with `stratify=y` | Maintains the proportion of churners in both sets (imbalanced data). |
-| **Best model selection** | Highest F1-Score | More robust than isolated accuracy in imbalanced problems. |
-| **Reproducibility** | Fixed `random_state=42` in all steps | Ensures identical results on every run. |
+## 💡 Possíveis extensões (para bônus/desempate entre participantes)
 
----
-
-### 📏 Evaluation Criteria (Competition)
-
-| Criterion | Weight |
-| --- | --- |
-| Pipeline executes without errors | 20% |
-| Correct handling of nulls and categoricals | 20% |
-| Correct metrics (not just accuracy) | 25% |
-| Comparison between 2 models | 15% |
-| Code organization/readability | 10% |
-| Model correctly saved | 10% |
-
----
-
-### 🔮 Possible Extensions
-
-* [ ] Class balancing (`class_weight="balanced"` or SMOTE)
-* [ ] Cross-validation (`cross_val_score`)
-* [ ] Hyperparameter tuning (`GridSearchCV`)
-* [ ] One-Hot Encoding for variables without a natural order
-* [ ] Package the GUI as an executable (`.exe`) with PyInstaller
-
----
-
-### 🐞 Troubleshooting
-
-| Error | Cause | Solution |
-| --- | --- | --- |
-| `FileNotFoundError: telco_churn.csv` | Dataset was not generated | Run `python generate_dataset.py` first. |
-| `ModuleNotFoundError` | Missing dependency | Run `pip install pandas scikit-learn joblib`. |
-| `TypeError: numpy string dtypes...` | Pandas version incompatible with `include=["object","str"]` | Use `include=["object"]` in `select_dtypes`. |
-| `python: command not found` | Python is not in the PATH | Try `python3` instead of `python`. |
-
----
-
-### 📄 License
-
-This project is licensed under the MIT License — feel free to use, study, and adapt.
-
-### 👤 Author
-
-Developed by Ricardo Barbieri for the CodeQuest Arena — DataPython challenge.
+- Balanceamento de classes com `class_weight="balanced"` ou SMOTE.
+- Validação cruzada (`cross_val_score`) em vez de um único split.
+- `GridSearchCV` para otimizar hiperparâmetros.
+- One-Hot Encoding em vez de Label Encoding para colunas sem ordem natural.
