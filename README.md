@@ -152,4 +152,4 @@ This project is licensed under the MIT License — feel free to use, study, and 
 
 ### 👤 Author
 
-Developed by Ricardo Barebieri for the CodeQuest Arena — DataPython challenge.
+Developed by Ricardo Barbieri for the CodeQuest Arena — DataPython challenge.
