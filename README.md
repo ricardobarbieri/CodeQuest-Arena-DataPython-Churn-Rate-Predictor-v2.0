@@ -1,143 +1,155 @@
-# 🎯 CodeQuest Arena — Churn Rate Predictor v2.0
+🎯 **CodeQuest Arena — Churn Rate Predictor v2.0**
 
-Pipeline de Data Science em Python (Pandas + Scikit-Learn) para prever cancelamento de assinaturas (**Churn**), com interface gráfica (GUI) para execução visual. Desenvolvido como solução de referência (gabarito 10/10) do desafio **DataPython** da competição **CodeQuest Arena**.
-
-![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python)
-![Pandas](https://img.shields.io/badge/Pandas-Data%20Cleaning-150458?logo=pandas)
-![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-ML-F7931E?logo=scikit-learn)
-![License](https://img.shields.io/badge/license-MIT-green)
+Data Science pipeline in Python (Pandas + Scikit-Learn) to predict subscription cancellation (churn), with a graphical user interface (GUI) for visual execution. Developed as a reference solution (10/10 answer key) for the DataPython challenge of the CodeQuest Arena competition.
 
 ---
 
-## 📌 Sobre o projeto
+### 📌 About the Project
 
-Este projeto implementa um pipeline completo e reprodutível de Machine Learning para prever quais clientes têm maior probabilidade de cancelar um serviço (churn), a partir de um dataset no estilo do clássico *Telco Customer Churn*. Ele foi construído para ser ao mesmo tempo:
+This project implements a complete and reproducible Machine Learning pipeline to predict which customers are most likely to cancel a service (churn), using a dataset in the style of the classic Telco Customer Churn. It was built to be simultaneously:
 
-- **Funcional** — treina, avalia e salva um modelo real
-- **Didático** — cada etapa é comentada explicando o *porquê*, não só o *como*
-- **Visual** — inclui uma interface gráfica simples para acompanhar a execução sem precisar do terminal
+* **Functional** — trains, evaluates, and saves a real model.
+* **Didactic** — each step is commented explaining the *why*, not just the *how*.
+* **Visual** — includes a simple graphical interface to monitor the execution without needing the terminal.
 
-## ✨ Funcionalidades
+---
 
-- 🧹 Limpeza de dados (tratamento de valores nulos com imputação por mediana)
-- 🔤 Codificação automática de variáveis categóricas
-- 🤖 Treino comparativo entre **Regressão Logística** e **Random Forest**
-- 📊 Avaliação com múltiplas métricas: Acurácia, Precisão, Recall, F1-Score e AUC-ROC
-- 🧩 Matriz de confusão e ranking das variáveis mais importantes
-- 💾 Exportação automática do melhor modelo (`.pkl`)
-- 🖥️ Interface gráfica (Tkinter) para rodar o pipeline com um clique
+### ✨ Features
 
-## 🖼️ Screenshot
+* 🧹 **Data cleaning** (handling missing values with median imputation).
+* 🔤 **Automatic encoding** of categorical variables.
+* 🤖 **Comparative training** between Logistic Regression and Random Forest.
+* 📊 **Evaluation using multiple metrics:** Accuracy, Precision, Recall, F1-Score, and AUC-ROC.
+* 🧩 **Confusion matrix** and ranking of the most important variables.
+* 💾 **Automatic export** of the best model (`.pkl`).
+* 🖥️ **Graphical interface** (Tkinter) to run the pipeline with a single click.
 
-> *(adicione aqui um print da GUI em execução, ex: `![GUI](docs/screenshot.png)`)*
+---
 
-## 📁 Estrutura do repositório
+### 📁 Repository Structure
 
-```
+```text
 Churn Rate Predictor v2.0/
 │
-├── generate_dataset.py     # Gera o dataset sintético telco_churn.csv
-├── churn_pipeline.py       # Pipeline de ML (limpeza, treino, avaliação, salvamento)
-├── churn_gui.py            # Interface gráfica que executa o pipeline
-├── telco_churn.csv         # Dataset gerado (após rodar generate_dataset.py)
-├── best_churn_model.pkl    # Modelo treinado salvo (gerado após rodar o pipeline)
+├── generate_dataset.py     # Generates the synthetic dataset telco_churn.csv
+├── churn_pipeline.py       # ML Pipeline (cleaning, training, evaluation, saving)
+├── churn_gui.py            # Graphical interface that runs the pipeline
+├── telco_churn.csv         # Generated dataset (after running generate_dataset.py)
+├── best_churn_model.pkl    # Saved trained model (generated after running the pipeline)
 └── README.md
+
 ```
 
-## ⚙️ Requisitos
+---
 
-- Python 3.9 ou superior
-- Bibliotecas: `pandas`, `scikit-learn`, `joblib` (Tkinter já vem no Python padrão)
+### ⚙️ Requirements
 
-## 🚀 Instalação e uso
+* Python 3.9 or higher
+* Libraries: `pandas`, `scikit-learn`, `joblib` (Tkinter comes with standard Python)
+
+---
+
+### 🚀 Installation and Usage
 
 ```bash
-# 1. Clone o repositório
-git clone https://github.com/seu-usuario/codequest-arena-churn.git
+# 1. Clone the repository
+git clone https://github.com/your-user/codequest-arena-churn.git
 cd codequest-arena-churn
 
-# 2. Instale as dependências
+# 2. Install dependencies
 pip install pandas scikit-learn joblib
 
-# 3. Gere o dataset (rodar apenas uma vez)
+# 3. Generate the dataset (run only once)
 python generate_dataset.py
 
-# 4. Execute o pipeline via terminal...
+# 4. Execute the pipeline via terminal...
 python churn_pipeline.py
 
-# ...ou via interface gráfica
+# ...or via graphical interface
 python churn_gui.py
-```
-
-### Saída esperada (terminal)
 
 ```
-[LIMPEZA] 23 valores nulos encontrados em 'TotalCharges'
-[LIMPEZA] Imputados com a mediana = 2078.85
-[ENCODING] Colunas categóricas codificadas: [...]
 
-=== Regressão Logística ===
-Acurácia : 0.6775
-Precisão : 0.5902
+**Expected Output (terminal)**
+
+```text
+[CLEANING] 23 missing values found in 'TotalCharges'
+[CLEANING] Imputed with the median = 2078.85
+[ENCODING] Encoded categorical columns: [...]
+
+=== Logistic Regression ===
+Accuracy : 0.6775
+Precision : 0.5902
 Recall   : 0.4768
 F1-Score : 0.5275
 AUC-ROC  : 0.7145
 ...
 
->>> Melhor modelo (por F1-Score): Regressão Logística
+>>> Best model (by F1-Score): Logistic Regression
 
-[INTERPRETABILIDADE] Top 5 variáveis mais importantes (Random Forest):
+[INTERPRETABILITY] Top 5 most important variables (Random Forest):
 MonthlyCharges    0.203848
 TotalCharges      0.201140
 tenure            0.176385
 ...
 
-[PERSISTÊNCIA] Modelo vencedor salvo em: best_churn_model.pkl
+[PERSISTENCE] Winning model saved to: best_churn_model.pkl
+
 ```
 
-## 🧠 Metodologia
+---
 
-| Etapa | Técnica utilizada | Justificativa |
-|---|---|---|
-| Tratamento de nulos | Imputação pela **mediana** | Mais robusta a outliers que a média |
-| Variáveis categóricas | `LabelEncoder` | Converte texto em número para os modelos |
-| Escala das variáveis | `StandardScaler` (só na Regressão Logística) | Modelos baseados em distância/gradiente são sensíveis à escala; árvores não |
-| Divisão treino/teste | 80/20 com `stratify=y` | Mantém a proporção de churners nos dois conjuntos (dados desbalanceados) |
-| Seleção do melhor modelo | Maior **F1-Score** | Mais robusto que acurácia isolada em problemas desbalanceados |
-| Reprodutibilidade | `random_state=42` fixo em todas as etapas | Garante resultados idênticos a cada execução |
+### 🧠 Methodology
 
-## 📏 Critérios de avaliação (competição)
+| Step | Technique Used | Justification |
+| --- | --- | --- |
+| **Missing value handling** | Median imputation | More robust to outliers than the mean. |
+| **Categorical variables** | `LabelEncoder` | Converts text to numbers for the models. |
+| **Variable scaling** | `StandardScaler` (only in Logistic Regression) | Distance/gradient-based models are sensitive to scale; trees are not. |
+| **Train/test split** | 80/20 with `stratify=y` | Maintains the proportion of churners in both sets (imbalanced data). |
+| **Best model selection** | Highest F1-Score | More robust than isolated accuracy in imbalanced problems. |
+| **Reproducibility** | Fixed `random_state=42` in all steps | Ensures identical results on every run. |
 
-| Critério | Peso |
-|---|---|
-| Pipeline executa sem erro | 20% |
-| Tratamento correto de nulos e categóricas | 20% |
-| Métricas corretas (não só acurácia) | 25% |
-| Comparação entre 2 modelos | 15% |
-| Organização/legibilidade do código | 10% |
-| Modelo salvo corretamente | 10% |
+---
 
-## 🔮 Possíveis extensões
+### 📏 Evaluation Criteria (Competition)
 
-- [ ] Balanceamento de classes (`class_weight="balanced"` ou SMOTE)
-- [ ] Validação cruzada (`cross_val_score`)
-- [ ] Otimização de hiperparâmetros (`GridSearchCV`)
-- [ ] One-Hot Encoding para variáveis sem ordem natural
-- [ ] Empacotar a GUI como executável (`.exe`) com PyInstaller
+| Criterion | Weight |
+| --- | --- |
+| Pipeline executes without errors | 20% |
+| Correct handling of nulls and categoricals | 20% |
+| Correct metrics (not just accuracy) | 25% |
+| Comparison between 2 models | 15% |
+| Code organization/readability | 10% |
+| Model correctly saved | 10% |
 
-## 🐞 Solução de problemas
+---
 
-| Erro | Causa | Solução |
-|---|---|---|
-| `FileNotFoundError: telco_churn.csv` | Dataset não foi gerado | Rode `python generate_dataset.py` primeiro |
-| `ModuleNotFoundError` | Dependência ausente | Rode `pip install pandas scikit-learn joblib` |
-| `TypeError: numpy string dtypes...` | Versão de Pandas incompatível com `include=["object","str"]` | Use `include=["object"]` no `select_dtypes` |
-| `python: command not found` | Python não está no PATH | Tente `python3` no lugar de `python` |
+### 🔮 Possible Extensions
 
-## 📄 Licença
+* [ ] Class balancing (`class_weight="balanced"` or SMOTE)
+* [ ] Cross-validation (`cross_val_score`)
+* [ ] Hyperparameter tuning (`GridSearchCV`)
+* [ ] One-Hot Encoding for variables without a natural order
+* [ ] Package the GUI as an executable (`.exe`) with PyInstaller
 
-Este projeto está sob a licença MIT — sinta-se livre para usar, estudar e adaptar.
+---
 
-## 👤 Autor
+### 🐞 Troubleshooting
 
-Desenvolvido para o desafio **CodeQuest Arena — DataPython**.
+| Error | Cause | Solution |
+| --- | --- | --- |
+| `FileNotFoundError: telco_churn.csv` | Dataset was not generated | Run `python generate_dataset.py` first. |
+| `ModuleNotFoundError` | Missing dependency | Run `pip install pandas scikit-learn joblib`. |
+| `TypeError: numpy string dtypes...` | Pandas version incompatible with `include=["object","str"]` | Use `include=["object"]` in `select_dtypes`. |
+| `python: command not found` | Python is not in the PATH | Try `python3` instead of `python`. |
+
+---
+
+### 📄 License
+
+This project is licensed under the MIT License — feel free to use, study, and adapt.
+
+### 👤 Author
+
+Developed by Ricardo Barbieri for the CodeQuest Arena — DataPython challenge.
