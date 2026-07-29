@@ -1,6 +1,6 @@
 🎯 **CodeQuest Arena — Churn Rate Predictor v2.0**
 
-Data Science pipeline in Python (Pandas + Scikit-Learn) to predict subscription cancellation (churn), with a graphical user interface (GUI) for visual execution. Developed as a reference solution (10/10 answer key) for the DataPython challenge of the CodeQuest Arena competition.
+Data Science pipeline in Python (Pandas + Scikit-Learn) to predict subscription cancellation (churn), with a graphical user interface (GUI) for visual execution.
 
 ---
 
